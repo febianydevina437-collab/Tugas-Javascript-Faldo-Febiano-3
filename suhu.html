@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Suhu Private</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            object-fit: contain;
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            width: 320px;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .row-btn {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        #hasil {
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        #errorMsg {
+            color: red;
+            margin-bottom: 10px;
+            display: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <video id="bg-video" autoplay loop playsinline controls>
+        <source src="ILLIT (아일릿) ‘It’s Me’ Official MV.mp4" type="video/mp4">
+    </video>
+
+    <div id="loginPanel" class="content">
+        <h2>Halaman Login</h2>
+        <div id="errorMsg">Username atau password salah!</div>
+        
+        <form onsubmit="prosesLogin(event)">
+            <input type="text" id="username" placeholder="Username" autocomplete="username" required>
+            <input type="password" id="password" placeholder="Password" autocomplete="current-password" required>
+            <button type="submit">Masuk</button>
+        </form>
+    </div>
+
+    <div id="appPanel" class="content" style="display: none;">
+        <h2>Konverter Suhu</h2>
+        <input type="number" id="inputCelsius" placeholder="Masukkan suhu (°C)">
+        <button onclick="konversiSuhu()">Ubah Suhu</button>
+        <div id="hasil"></div>
+        <button class="btn-danger" onclick="tampilkanKonfirmasi()" style="margin-top: 30px;">Tutup Kalkulator</button>
+    </div>
+
+    <div id="confirmPanel" class="content" style="display: none;">
+        <h3>Anda ingin menutup?</h3>
+        <div class="row-btn">
+            <button class="btn-danger" onclick="tutupYa()">Ya</button>
+            <button class="btn-secondary" onclick="tutupTidak()">Tidak</button>
+        </div>
+    </div>
+
+    <script>
+        function prosesLogin(event) {
+            event.preventDefault();
+            
+            let user = document.getElementById("username").value;
+            let pass = document.getElementById("password").value;
+            
+            if(user === "admin" && pass === "1234") {
+                document.getElementById("loginPanel").style.display = "none";
+                document.getElementById("appPanel").style.display = "block";
+                document.getElementById("errorMsg").style.display = "none";
+            } else {
+                document.getElementById("errorMsg").style.display = "block";
+            }
+        }
+
+        function konversiSuhu() {
+            let inputElemen = document.getElementById("inputCelsius").value;
+            let divHasil = document.getElementById("hasil");
+
+            if(inputElemen === "") {
+                divHasil.innerHTML = "<span style='color:red;'>Silakan masukkan angka!</span>";
+                return;
+            }
+
+            let celsius = Number(inputElemen);
+            let fahrenheit = (celsius * 9/5) + 32;
+            let kelvin = celsius + 273.15;
+            
+            divHasil.innerHTML = 
+                "<strong>" + celsius + " °C</strong> sama dengan:<br><br>" +
+                "<strong>" + fahrenheit.toFixed(2) + " °F</strong> (Fahrenheit)<br>" + 
+                "<strong>" + kelvin.toFixed(2) + " K</strong> (Kelvin)";
+        }
+
+        function tampilkanKonfirmasi() {
+            document.getElementById("appPanel").style.display = "none";
+            document.getElementById("confirmPanel").style.display = "block";
+        }
+
+        function tutupYa() {
+            document.getElementById("confirmPanel").style.display = "none";
+            document.getElementById("loginPanel").style.display = "block";
+            
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+            document.getElementById("inputCelsius").value = "";
+            document.getElementById("hasil").innerHTML = "";
+        }
+
+        function tutupTidak() {
+            document.getElementById("confirmPanel").style.display = "none";
+            document.getElementById("appPanel").style.display = "block";
+        }
+    </script>
+</body>
+</html>
